@@ -1,18 +1,15 @@
 ; (function($) {
   var defaults = {
-    calc: [
+    blocks: [
       {
         desc: 'Калькулятор расчета стоимости разработки сайта',
         type: 'none',
         group: 'desc',
         text: [
-          'При помощи формы ниже, Вы можете получить приблизительную стоимость:',
-          ' - разработки сайта',
-          ' - создания логотипа',
-          ' - разработки фирменного стиля',
-          ' - регистрации хостинга'
+          'При помощи формы ниже, Вы можете получить приблизительную стоимость разработки сайта'
         ],
-        price: [1000, 2000, 3000, 4000, 5000]
+        price: [1000, 2000, 3000, 4000, 5000],
+        discount: [1, 1, 1, 1, 1]
       },
       {
         desc: 'Выберите тип сайта',
@@ -20,10 +17,12 @@
         group: 'type-site',
         text: [
           'Визитка',
-          'Корпоративный',
-          'Бизнес'
+          'Бизнес',
+          'Интернет магазин',
+          'Корпоративный'
         ],
-        price: [1000, 2000, 3000]
+        price: [1000, 2000, 3000, 4000],
+        discount: [1, 1, 1, 1]
       },
       {
         desc: 'Дизайн',
@@ -31,20 +30,13 @@
         group: 'design',
         text: [
           'Разработать логотип',
-          'Фирменный дизайн'
+          'Эксклюзивный дизайн',
+          'Адаптивный дизайн сайта',
+          'Простая анимация',
+          'Сложная анимация'
         ],
-        price: [1000, 2000]
-      },
-      {
-        desc: 'Функциональность бизнес портала',
-        type: 'checkbox',
-        group: 'func-port',
-        text: [
-          'Регистрация пользователей',
-          'Личный кабинет',
-          '3D экскурсия офиса'
-        ],
-        price: [1000, 2000, 3000]
+        price: [1000, 2000, 3000, 4000, 5000],
+        discount: [1, 1, 1, 1, 1]
       },
       {
         desc: 'Функциональность сайта',
@@ -55,7 +47,40 @@
           'Комментарии',
           'Регистрация'
         ],
-        price: [1000, 2000, 3000]
+        price: [1000, 2000, 3000],
+        discount: [1, 1, 1]
+      },
+      {
+        desc: 'Функциональность бизнес портала',
+        type: 'checkbox',
+        group: 'func-port',
+        text: [
+          'Калькулятор',
+          'Поиск по сайту',
+          'Регистрация пользователей',
+          'Личный кабинет',
+          'Веб-чат'
+        ],
+        price: [1000, 2000, 3000, 4000, 5000],
+        discount: [1, 1, 1, 1, 1]
+      },
+      {
+        desc: 'Функциональность интернет магазина',
+        type: 'checkbox',
+        group: 'func-magaz',
+        text: [
+          'Регистрация пользователей',
+          'Поиск по сайту',
+          'Корзина товаров',
+          'Фильтр товаров',
+          'Слайд-шоу',
+          'Гостевая книга',
+          'Калькулятор',
+          'Личный кабинет',
+          'Веб-чат'
+        ],
+        price: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000],
+        discount: [1, 1, 1, 0.15, 1, 1, 0.10, 1, 1]
       },
       {
         desc: 'Услуги копирайтера',
@@ -68,24 +93,8 @@
           'Простая анимация',
           'Сложная анимация'
         ],
-        price: [1000, 2000, 3000, 4000, 5000]
-      },
-      {
-        desc: 'У вас есть хостинг?',
-        type: 'radio',
-        group: 'host',
-        text: [
-          'Да',
-          'Нет'
-        ],
-        price: [100, 200]
-      },
-      {
-        desc: 'Введите количество страниц',
-        type: 'number',
-        group: 'count',
-        text: ['text'],
-        price: [10]
+        price: [1000, 2000, 3000, 4000, 5000],
+        discount: [1, 1, 1, 1, 1]
       },
       {
         desc: 'Условия хостинга',
@@ -96,11 +105,12 @@
           'Стандартный',
           'Бизнес'
         ],
-        price: [1000, 2000, 3000]
+        price: [1000, 2000, 3000],
+        discount: [1, 0.3, 1]
       }
     ]};
   
-  function createBlock(tag, className) {
+  function createBlock(tag, className, visible) {
     var $block = $(tag, {
       class: className
     });
@@ -108,7 +118,7 @@
     return $block;
   }
   
-  function createElement(type, text, price, group, i, j) {
+  function createElement(type, text, price, group, discount, i, j) {
     var $li = createBlock('<div/>', 'li');
     switch (type) {
       case 'checkbox':
@@ -116,6 +126,7 @@
               type: type,
               name: group,
               value: price,
+              'data-discount': discount,
               id: type+'-'+i+'-'+j
             }),
             l = $('<label/>', {
@@ -129,6 +140,7 @@
               type: type,
               name: group,
               value: price,
+              'data-discount': discount,
               id: type+'-'+i+'-'+j
             }),
             l = $('<label/>', {
@@ -161,19 +173,18 @@
   }
   
   $.fn.calcSite = function(options) {
-    var config = $.extend({}, defaults, options);
-    var len = config.length;
+    var config = $.extend({}, defaults, options),
+        len = config.blocks.length,
+        i, j;
     
-    console.log(config.calc[0].price[0]);
-    
-    for(var i = 0; i < 9; i++) {
-      var $block = createBlock('<div/>', 'block'),
+    for(i = 0; i < len; i++) {
+      var $block = createBlock('<div/>', 'block', config.blocks[i].visible),
           $descBlock = createBlock('<div/>', 'desc-block'),
           $mainBlock = createBlock('<div/>', 'main-block');
       
-      $descBlock.html(config.calc[i].desc);
-      for(var j = 0; j < config.calc[i].text.length; j++) {
-        var $li = createElement(config.calc[i].type, config.calc[i].text[j], config.calc[i].price[j], config.calc[i].group, i, j);
+      $descBlock.html(config.blocks[i].desc);
+      for(j = 0; j < config.blocks[i].text.length; j++) {
+        var $li = createElement(config.blocks[i].type, config.blocks[i].text[j], config.blocks[i].price[j], config.blocks[i].group, config.blocks[i].discount[j], i, j);
         $li.appendTo($mainBlock);
       }
       
@@ -186,10 +197,31 @@
     $block = createBlock('<div/>', 'block');
     $block.addClass('last');
     $('<button/>', {
+      id: 'calculate',
       class: 'calculate'
     }).text('Расчитать').appendTo($block);
     
     $block.appendTo(this);
     
+    $('#calculate').on('click', function() {
+      var length = $('.block input:checked').length,
+          price = [],
+          priceDiscount = [],
+          sum = 0,
+          sumDiscount = 0;
+      for(i = 0; i < length; i++) {
+        price[i] = parseInt($('.block input:checked').eq(i).attr('value'), 10);
+        priceDiscount[i] = parseFloat($('.block input:checked').eq(i).attr('data-discount'), 10);
+      }
+      
+      for(i = 0; i < length; i++) {
+        sum += price[i];
+        sumDiscount += price[i] * priceDiscount[i];
+        console.log((price[i] * priceDiscount[i])+' - '+price[i]+' - '+priceDiscount[i]);
+      }
+      console.log('Без скидки: '+sum);
+      console.log('Сумма скидки: '+sumDiscount);
+      console.log('Итого: '+(sum-sumDiscount));
+    });
   };
 })(jQuery);
