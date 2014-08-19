@@ -107,6 +107,18 @@
         ],
         price: [1000, 2000, 3000],
         discount: [1, 0.3, 1]
+      },
+      {
+        desc: 'Условия хостинга',
+        type: 'sum',
+        group: 'sum',
+        text: [
+          'Без скидки:',
+          'Сумма скидки:',
+          'Итого:'
+        ],
+        price: [0, 0, 0],
+        discount: [0, 0, 0]
       }
     ]};
   
@@ -131,7 +143,7 @@
             }),
             l = $('<label/>', {
               for: type+'-'+i+'-'+j
-            }).text(text+' цена: '+price);
+            }).text(text+' (цена: '+price+') *'+discount*100+'%');
         r.appendTo($li);
         l.appendTo($li);
         break;
@@ -145,7 +157,7 @@
             }),
             l = $('<label/>', {
               for: type+'-'+i+'-'+j
-            }).text(text+' цена: '+price);
+            }).text(text+' (цена: '+price+') *'+discount*100+'%');
         r.appendTo($li);
         l.appendTo($li);
         break;
@@ -159,11 +171,9 @@
             });
         r.appendTo($li);
         break;
-//      case 'select':
-//        var s = $('<select/>'),
-//            o = $('<option>').text(text);
-//        
-//        break;
+      case 'sum':
+        $li = createBlock('<div/>', 'li sum').text(text+' '+price);
+        break;
       case 'none':
         $li.text(text);
         break;
@@ -203,6 +213,7 @@
     
     $block.appendTo(this);
     
+    
     $('#calculate').on('click', function() {
       var length = $('.block input:checked').length,
           price = [],
@@ -216,12 +227,16 @@
       
       for(i = 0; i < length; i++) {
         sum += price[i];
-        sumDiscount += price[i] * priceDiscount[i];
-        console.log((price[i] * priceDiscount[i])+' - '+price[i]+' - '+priceDiscount[i]);
+        if(priceDiscount[i] < 1) {
+          sumDiscount += price[i] * priceDiscount[i];
+        }
+        
       }
-      console.log('Без скидки: '+sum);
-      console.log('Сумма скидки: '+sumDiscount);
-      console.log('Итого: '+(sum-sumDiscount));
+      
+      
+      $('.sum').eq(0).html('Без скидки: '+sum);
+      $('.sum').eq(1).html('Сумма скидки: '+sumDiscount);
+      $('.sum').eq(2).html('Итого: '+(sum - sumDiscount));
     });
   };
 })(jQuery);
