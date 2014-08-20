@@ -16,6 +16,8 @@
 	height: 100%;
 	float: left;
 	padding: 10px 5px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
