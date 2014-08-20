@@ -23,7 +23,7 @@
 					'Корпоративный'
 				],
 				price: [3000, 13000, 17000, 30000],
-				discount: [0.2, 0.1, 0, 0]
+				discount: [0.2, 0.1, 0, 0],
 			},
 			{
 				desc: 'Дизайн',
@@ -110,7 +110,7 @@
 				discount: [0, 0.3, 0]
 			},
 			{
-				desc: 'Примерная цена сайта',
+				desc: 'Примерная стоимость сайта',
 				type: 'sum',
 				group: 'sum',
 				text: [
@@ -121,7 +121,8 @@
 				price: [0, 0, 0],
 				discount: [0, 0, 0]
 			}
-		]};
+		]
+	};
 	
 	function createBlock(tag, className, visible) {
 		var $block = $(tag, {
@@ -171,8 +172,15 @@
 		
 		return $li;
 	}
+
+	function allHide() {
+		for (var i = 2; i < 9; i++) {
+			$('.block').eq(i).addClass('hide-block').removeClass('show-block');
+		};
+	}
 	
 	$.fn.calcSite = function(options) {
+		//defaults.blocks = $.getJSON('json/setting.json');
 		var config = $.extend({}, defaults, options),
 				len = config.blocks.length,
 				i, j;
@@ -181,7 +189,6 @@
 			var $block = createBlock('<div/>', 'block', config.blocks[i].visible),
 					$descBlock = createBlock('<div/>', 'desc-block'),
 					$mainBlock = createBlock('<div/>', 'main-block');
-
 			$descBlock.html(config.blocks[i].desc);
 			for(j = 0; j < config.blocks[i].text.length; j++) {
 				var $li = createElement(config.blocks[i].type, config.blocks[i].text[j], config.blocks[i].price[j], config.blocks[i].group, config.blocks[i].discount[j], i, j);
@@ -203,6 +210,23 @@
 
 		$block.appendTo(this);
 
+		var $choseStie = $('.block').eq(1).find('.li');
+		$choseStie.eq(0).find('label').attr('data-num', '2,7');
+		$choseStie.eq(1).find('label').attr('data-num', '2,4,7');
+		$choseStie.eq(2).find('label').attr('data-num', '2,5,7');
+		$choseStie.eq(3).find('label').attr('data-num', '2,3,7');
+
+		allHide();
+
+		$choseStie.on('click', function() {
+			allHide();
+			var show = $(this).find('label').attr('data-num').split(',');
+			for (var i = 0; i < show.length; i++) {
+				var ii = parseInt(show[i]);
+				$('.block').eq(ii).addClass('show-block').removeClass('hide-block');
+			}
+		});
+
 		$('#calculate').on('click', function() {
 			var length = $('.block input:checked').length,
 					price = [],
@@ -220,7 +244,7 @@
 				}
 				
 			}
-
+			$('.block').eq(8).addClass('show-block');
 			$('.sum').eq(0).html('Без скидки: '+sum);
 			$('.sum').eq(1).html('Сумма скидки: '+sumDiscount);
 			$('.sum').eq(2).html('Итого: '+(sum - sumDiscount));
