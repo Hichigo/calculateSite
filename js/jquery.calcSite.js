@@ -250,6 +250,7 @@
 			$('.sum').eq(2).html('Итого: '+(sum - sumDiscount));
 		});
 
+		$choseStie.eq(0).find('label').click();
 		return this;
 	};
 })(jQuery);
