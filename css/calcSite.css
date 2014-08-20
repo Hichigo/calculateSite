@@ -1,7 +1,8 @@
 .block {
-	box-shadow: 0 2px 5px rgba(0, 0, 0, .4);
+	box-shadow: 0 2px 5px rgba(1, 87, 178, .4);
 	padding: 10px 5px;
 	margin-bottom: 20px;
+	border: 4px double #0157b2;
 }
 
 .block:after {
@@ -26,7 +27,7 @@
 	float: left;
 	padding: 10px 5px;
 	box-sizing: border-box;
-	border-left: 1px solid #ccc;
+	border-left: 4px double #0157b2;
 }
 
 .li {
@@ -36,15 +37,42 @@
 .last {
 	position: relative;
 	box-shadow: none;
+	border: none;
 }
 
 .calculate {
 	position: absolute;
-	width: 100px;
-	height: 30px;
+	width: 150px;
+	height: 40px;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
 	margin: auto;
+	border: 4px double #0157b2;
+	background: transparent;
+	transition: all .4s;
+	color: #0157b2;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.calculate:hover {
+	background: #0157B2;
+	color: #fff;
+	border-color: #fff;
+}
+
+@media (max-width: 600px) {
+	.desc-block {
+		width: 100%;
+		float: none;
+	}
+
+	.main-block {
+		width: 100%;
+		float: none;
+		border-left: none;
+		border-top: 4px double #0157b2;
+	}
 }

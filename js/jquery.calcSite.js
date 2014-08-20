@@ -6,10 +6,11 @@
 				type: 'none',
 				group: 'desc',
 				text: [
-					'При помощи формы ниже, Вы можете получить приблизительную стоимость разработки сайта'
+					'При помощи формы ниже, Вы можете получить приблизительную стоимость разработки сайта.',
+					'Символом «*» отмечен процент скидки на услугу.'
 				],
-				price: [1000, 2000, 3000, 4000, 5000],
-				discount: [1, 1, 1, 1, 1]
+				price: [0],
+				discount: [0]
 			},
 			{
 				desc: 'Выберите тип сайта',
@@ -21,8 +22,8 @@
 					'Интернет магазин',
 					'Корпоративный'
 				],
-				price: [1000, 2000, 3000, 4000],
-				discount: [1, 1, 1, 1]
+				price: [3000, 13000, 17000, 30000],
+				discount: [0.2, 0.1, 0, 0]
 			},
 			{
 				desc: 'Дизайн',
@@ -35,8 +36,8 @@
 					'Простая анимация',
 					'Сложная анимация'
 				],
-				price: [1000, 2000, 3000, 4000, 5000],
-				discount: [1, 1, 1, 1, 1]
+				price: [999, 10000, 15000, 3000, 5000],
+				discount: [0, 0.5, 0, 0, 0]
 			},
 			{
 				desc: 'Функциональность сайта',
@@ -47,8 +48,8 @@
 					'Комментарии',
 					'Регистрация'
 				],
-				price: [1000, 2000, 3000],
-				discount: [1, 1, 1]
+				price: [999, 999, 999],
+				discount: [0, 0, 0]
 			},
 			{
 				desc: 'Функциональность бизнес портала',
@@ -61,8 +62,8 @@
 					'Личный кабинет',
 					'Веб-чат'
 				],
-				price: [1000, 2000, 3000, 4000, 5000],
-				discount: [1, 1, 1, 1, 1]
+				price: [2500, 1000, 999, 999, 5000],
+				discount: [0, 0, 0, 0, 0]
 			},
 			{
 				desc: 'Функциональность интернет магазина',
@@ -79,8 +80,8 @@
 					'Личный кабинет',
 					'Веб-чат'
 				],
-				price: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000],
-				discount: [1, 1, 1, 0.15, 1, 1, 0.10, 1, 1]
+				price: [999, 1500, 1000, 2500, 1500, 1500, 2500, 999, 5000],
+				discount: [0, 0, 0, 0.15, 0, 0, 0.10, 0, 0]
 			},
 			{
 				desc: 'Услуги копирайтера',
@@ -93,8 +94,8 @@
 					'Простая анимация',
 					'Сложная анимация'
 				],
-				price: [1000, 2000, 3000, 4000, 5000],
-				discount: [1, 1, 1, 1, 1]
+				price: [0, 10000, 15000, 3000, 5000],
+				discount: [0, 0, 0, 0, 0]
 			},
 			{
 				desc: 'Условия хостинга',
@@ -105,11 +106,11 @@
 					'Стандартный',
 					'Бизнес'
 				],
-				price: [1000, 2000, 3000],
-				discount: [1, 0.3, 1]
+				price: [5000, 10000, 17000],
+				discount: [0, 0.3, 0]
 			},
 			{
-				desc: 'Условия хостинга',
+				desc: 'Примерная цена сайта',
 				type: 'sum',
 				group: 'sum',
 				text: [
@@ -126,7 +127,6 @@
 		var $block = $(tag, {
 			class: className
 		});
-		
 		return $block;
 	}
 	
@@ -161,16 +161,6 @@
 				r.appendTo($li);
 				l.appendTo($li);
 				break;
-			case 'number':
-				var r = $('<input/>', {
-							type: type,
-							value: 1,
-							min: 1,
-							max: 100,
-							step: 1
-						});
-				r.appendTo($li);
-				break;
 			case 'sum':
 				$li = createBlock('<div/>', 'li sum').text(text+' '+price);
 				break;
@@ -186,34 +176,33 @@
 		var config = $.extend({}, defaults, options),
 				len = config.blocks.length,
 				i, j;
-		
+
 		for(i = 0; i < len; i++) {
 			var $block = createBlock('<div/>', 'block', config.blocks[i].visible),
 					$descBlock = createBlock('<div/>', 'desc-block'),
 					$mainBlock = createBlock('<div/>', 'main-block');
-			
+
 			$descBlock.html(config.blocks[i].desc);
 			for(j = 0; j < config.blocks[i].text.length; j++) {
 				var $li = createElement(config.blocks[i].type, config.blocks[i].text[j], config.blocks[i].price[j], config.blocks[i].group, config.blocks[i].discount[j], i, j);
 				$li.appendTo($mainBlock);
 			}
-			
+
 			$descBlock.appendTo($block);
 			$mainBlock.appendTo($block);
-			
+
 			$block.appendTo(this);
 		}
-		
+
 		$block = createBlock('<div/>', 'block');
 		$block.addClass('last');
 		$('<button/>', {
 			id: 'calculate',
 			class: 'calculate'
 		}).text('Расчитать').appendTo($block);
-		
+
 		$block.appendTo(this);
-		
-		
+
 		$('#calculate').on('click', function() {
 			var length = $('.block input:checked').length,
 					price = [],
@@ -224,7 +213,6 @@
 				price[i] = parseInt($('.block input:checked').eq(i).attr('value'), 10);
 				priceDiscount[i] = parseFloat($('.block input:checked').eq(i).attr('data-discount'), 10);
 			}
-			
 			for(i = 0; i < length; i++) {
 				sum += price[i];
 				if(priceDiscount[i] < 1) {
@@ -232,11 +220,12 @@
 				}
 				
 			}
-			
-			
+
 			$('.sum').eq(0).html('Без скидки: '+sum);
 			$('.sum').eq(1).html('Сумма скидки: '+sumDiscount);
 			$('.sum').eq(2).html('Итого: '+(sum - sumDiscount));
 		});
+
+		return this;
 	};
 })(jQuery);
