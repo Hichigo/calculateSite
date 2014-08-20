@@ -1,47 +1,48 @@
 .block {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, .4);
-  padding: 10px 5px;
-  margin-bottom: 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, .4);
+	padding: 10px 5px;
+	margin-bottom: 20px;
 }
 
 .block:after {
-  content: '';
-  display: table;
-  clear: both;
+	content: '';
+	display: table;
+	clear: both;
+	visibility: hidden;
 }
 
 .desc-block {
-  width: 30%;
-  height: 100%;
-  float: left;
-  padding: 10px 5px;
-  box-sizing: border-box;
+	width: 30%;
+	height: 100%;
+	float: left;
+	padding: 10px 5px;
+	box-sizing: border-box;
 }
 
 .main-block {
-  width: 70%;
-  float: left;
-  padding: 10px 5px;
-  box-sizing: border-box;
-  border-left: 1px solid #ccc;
+	width: 70%;
+	float: left;
+	padding: 10px 5px;
+	box-sizing: border-box;
+	border-left: 1px solid #ccc;
 }
 
 .li {
-  margin: 5px 0;
+	margin: 5px 0;
 }
 
 .last {
-  position: relative;
-  box-shadow: none;
+	position: relative;
+	box-shadow: none;
 }
 
 .calculate {
-  position: absolute;
-  width: 100px;
-  height: 30px;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
+	position: absolute;
+	width: 100px;
+	height: 30px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
 }
